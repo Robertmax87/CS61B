@@ -1,0 +1,140 @@
+package com.beg;
+
+public class ArrayDeque <B> implements Series <B> {
+    public B[] items;
+    public int initialSize = 8;
+    public int nextLast;
+    public int nextFirst;
+    public int index;
+    public int first;
+    public int size;
+
+    /**
+     * Creates an empty list.
+     */
+
+    public ArrayDeque() {
+        items = (B[]) new Object[initialSize];
+        index = 0;
+        int mid = items.length / 2;
+        nextFirst = mid - 1;
+        nextLast = mid;
+        size = 0;
+
+
+    }
+    @Override
+    public B removeFirst() {
+
+        nextFirst = (nextFirst - 1) % items.length;
+        B removedItem = items[nextFirst];
+        items[nextFirst] = null;
+        size--;
+        return removedItem;
+    }
+    @Override
+    public void fromBottom(B x) {
+        index = 1;
+        while (items[index] != null & index < items.length) {
+            index += 1;
+
+        }
+        items[index] = x;
+        size += 1;
+        index = 1;
+        if (index == initialSize) {
+            resizeUp(x);
+        }
+    }
+
+    @Override
+    public void addFirst(B x) {
+        if (size == items.length) {
+            resizeUp(x);
+        } else {
+            nextFirst = (nextFirst - 1) % items.length;
+            size += 1;
+
+        }
+    }
+
+    /**
+     * Inserts X into the back of the list.
+     */
+    @Override
+    public void addLast(B x) {
+        if (size == items.length) {
+            resizeUp(x);
+        } else {
+            nextLast = (nextLast + 1) % items.length;
+            size += 1;
+        }
+    }
+
+
+
+
+
+    /** Returns the item from the back of the list. */
+    @Override
+    public B getLast() {
+
+        B  x = items[size-2];
+        size-=2;
+        return x;
+    }
+    /** Gets the ith item in the list (0 is the front). */
+    @Override
+    public B get(int i) {
+
+        return items[i];
+    }
+
+    /** Returns the number of items in the list. */
+    @Override
+    public int size() {
+        return size;
+    }
+
+    /** Deletes item from back of the list and
+     * returns deleted item. */
+    @Override
+    public B removeLast() {
+        double used = size / initialSize;
+        if (used < .25) {
+            resizeDown();
+        } else {
+            items[size - 1] = null;
+            size -= 2;
+
+
+
+        }
+        return items[size-1];
+    }
+    @Override
+
+    public B[] resizeUp(B x){
+        double ferris = size * 1.75;
+        int next = (int)Math.round(ferris);
+        B[] a = (B[]) new Object[next];
+        System.arraycopy(items,0,a,0,size);
+        a[size] = x;
+        size +=1;
+        items = a;
+        initialSize = next;
+        return a;
+    }
+    @Override
+    public B[] resizeDown(){
+        double less = items.length * .70;
+        int lesser = (int)Math.round(less);
+        B[] b = (B[]) new Object [lesser];
+        System.arraycopy(items,0,b,0,items.length);
+        items = b;
+        initialSize = lesser;
+        return b;
+
+    }
+
+}
